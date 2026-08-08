@@ -1,0 +1,4 @@
+rootProject.name = 'fc-admin-catalog'
+include 'domain'
+include 'application'
+include 'infrastructure'
