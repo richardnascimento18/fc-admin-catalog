@@ -5,6 +5,8 @@ import com.fullcycle.admin.catalog.domain.validation.handler.ThrowsValidationHan
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.time.Instant;
+
 public class CategoryTest {
 
     @Test
@@ -121,5 +123,61 @@ public class CategoryTest {
         Assertions.assertNotNull(actualCategory.getCreatedAt());
         Assertions.assertNotNull(actualCategory.getUpdatedAt());
         Assertions.assertNotNull(actualCategory.getDeletedAt());
+    }
+
+    @Test
+    public void givenAValidActiveCategory_whenCallDeactivate_thenReturnInactiveCategory() {
+        final String expectedName = "Filmes";
+        final String expectedDescription = "The most watched category";
+        final boolean expectedIsActive = false;
+
+        final Category aCategory = Category.newCategory(expectedName, expectedDescription, true);
+        Assertions.assertDoesNotThrow(() -> aCategory.validate(new ThrowsValidationHandler()));
+
+        final Instant updatedAt = aCategory.getUpdatedAt();
+        final Instant createdAt = aCategory.getCreatedAt();
+
+        Assertions.assertTrue(aCategory.isActive());
+        Assertions.assertNull(aCategory.getDeletedAt());
+
+        final Category actualCategory = aCategory.deactivate();
+
+        Assertions.assertDoesNotThrow(() -> actualCategory.validate(new ThrowsValidationHandler()));
+
+        Assertions.assertEquals(aCategory.getId(), actualCategory.getId());
+        Assertions.assertEquals(expectedName, actualCategory.getName());
+        Assertions.assertEquals(expectedDescription, actualCategory.getDescription());
+        Assertions.assertEquals(expectedIsActive, actualCategory.isActive());
+        Assertions.assertEquals(createdAt, actualCategory.getCreatedAt());
+        Assertions.assertTrue(actualCategory.getUpdatedAt().isAfter(updatedAt));
+        Assertions.assertNotNull(actualCategory.getDeletedAt());
+    }
+
+    @Test
+    public void givenAValidInactiveCategory_whenCallActivate_thenReturnActiveCategory() {
+        final String expectedName = "Filmes";
+        final String expectedDescription = "The most watched category";
+        final boolean expectedIsActive = true;
+
+        final Category aCategory = Category.newCategory(expectedName, expectedDescription, false);
+        Assertions.assertDoesNotThrow(() -> aCategory.validate(new ThrowsValidationHandler()));
+
+        final Instant updatedAt = aCategory.getUpdatedAt();
+        final Instant createdAt = aCategory.getCreatedAt();
+
+        Assertions.assertFalse(aCategory.isActive());
+        Assertions.assertNotNull(aCategory.getDeletedAt());
+
+        final Category actualCategory = aCategory.activate();
+
+        Assertions.assertDoesNotThrow(() -> actualCategory.validate(new ThrowsValidationHandler()));
+
+        Assertions.assertEquals(aCategory.getId(), actualCategory.getId());
+        Assertions.assertEquals(expectedName, actualCategory.getName());
+        Assertions.assertEquals(expectedDescription, actualCategory.getDescription());
+        Assertions.assertEquals(expectedIsActive, actualCategory.isActive());
+        Assertions.assertEquals(createdAt, actualCategory.getCreatedAt());
+        Assertions.assertTrue(actualCategory.getUpdatedAt().isAfter(updatedAt));
+        Assertions.assertNull(actualCategory.getDeletedAt());
     }
 }
