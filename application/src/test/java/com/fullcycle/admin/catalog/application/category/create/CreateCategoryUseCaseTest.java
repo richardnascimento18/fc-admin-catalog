@@ -42,9 +42,9 @@ public class CreateCategoryUseCaseTest {
 
         Mockito.verify(gateway, Mockito.times(1))
                 .create(Mockito.argThat(aCategory ->
-                         Objects.equals(aCategory.getName(), expectedName)
-                                && Objects.equals(aCategory.getDescription(), expectedDescription)
-                                && Objects.equals(aCategory.isActive(), expectedIsActive)
+                         Objects.equals(expectedName, aCategory.getName())
+                                && Objects.equals(expectedDescription,aCategory.getDescription())
+                                && Objects.equals(expectedIsActive, aCategory.isActive())
                                 && Objects.nonNull(aCategory.getId())
                                 && Objects.nonNull(aCategory.getCreatedAt())
                                 && Objects.nonNull(aCategory.getUpdatedAt())
