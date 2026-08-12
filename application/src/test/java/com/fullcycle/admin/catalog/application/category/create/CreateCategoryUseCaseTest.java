@@ -2,15 +2,27 @@ package com.fullcycle.admin.catalog.application.category.create;
 
 import com.fullcycle.admin.catalog.domain.category.Category;
 import com.fullcycle.admin.catalog.domain.category.CategoryGateway;
+import com.fullcycle.admin.catalog.domain.exceptions.DomainException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Objects;
 
 import static org.mockito.AdditionalAnswers.returnsFirstArg;
 
+@ExtendWith(MockitoExtension.class)
 public class CreateCategoryUseCaseTest {
+    @InjectMocks
+    private DefaultCreateCategoryUseCase useCase;
+
+    @Mock
+    private CategoryGateway gateway;
+
     @Test
     public void givenAValidCommand_whenCallCreateCategory_thenShouldReturnCategoryId() {
         final String expectedName = "Movies";
@@ -19,10 +31,7 @@ public class CreateCategoryUseCaseTest {
 
         final CreateCategoryCommand aCommand = CreateCategoryCommand.with(expectedName, expectedDescription, expectedIsActive);
 
-        final CategoryGateway gateway = Mockito.mock(CategoryGateway.class);
         Mockito.when(gateway.create(Mockito.any())).thenAnswer(returnsFirstArg());
-
-        final CreateCategoryUseCase useCase = new DefaultCreateCategoryUseCase(gateway);
 
         final CreateCategoryOutput actualOutput = useCase.execute(aCommand);
 
@@ -32,6 +41,81 @@ public class CreateCategoryUseCaseTest {
         Mockito.verify(gateway, Mockito.times(1))
                 .create(Mockito.argThat(aCategory ->
                          Objects.equals(aCategory.getName(), expectedName)
+                                && Objects.equals(aCategory.getDescription(), expectedDescription)
+                                && Objects.equals(aCategory.isActive(), expectedIsActive)
+                                && Objects.nonNull(aCategory.getId())
+                                && Objects.nonNull(aCategory.getCreatedAt())
+                                && Objects.nonNull(aCategory.getUpdatedAt())
+                                && Objects.isNull(aCategory.getDeletedAt())
+
+                ));
+    }
+
+    @Test
+    public void givenAnInvalidName_whenCallCreateCategory_thenShouldReturnADomainException() {
+        final String expectedName = null;
+        final String expectedDescription = "This is a movies category";
+        final boolean expectedIsActive = true;
+        final String expectedErrorMessage = "'name' should not be null";
+        final int expectedErrorCount = 1;
+
+        final CreateCategoryCommand aCommand = CreateCategoryCommand.with(expectedName, expectedDescription, expectedIsActive);
+
+        final DomainException actualException = Assertions.assertThrows(DomainException.class, () -> useCase.execute(aCommand));
+
+        Assertions.assertNotNull(actualException);
+        Assertions.assertEquals(expectedErrorMessage, actualException.getMessage());
+
+        Mockito.verify(gateway, Mockito.times(0)).create(Mockito.any());
+    }
+
+    @Test
+    public void givenAValidCommandWithInactiveCategory_whenCallCreateCategory_thenShouldReturnInactiveCategoryId() {
+        final String expectedName = "Movies";
+        final String expectedDescription = "This is a movies category";
+        final boolean expectedIsActive = false;
+
+        final CreateCategoryCommand aCommand = CreateCategoryCommand.with(expectedName, expectedDescription, expectedIsActive);
+
+        Mockito.when(gateway.create(Mockito.any())).thenAnswer(returnsFirstArg());
+
+        final CreateCategoryOutput actualOutput = useCase.execute(aCommand);
+
+        Assertions.assertNotNull(actualOutput);
+        Assertions.assertNotNull(actualOutput.id());
+
+        Mockito.verify(gateway, Mockito.times(1))
+                .create(Mockito.argThat(aCategory ->
+                        Objects.equals(aCategory.getName(), expectedName)
+                                && Objects.equals(aCategory.getDescription(), expectedDescription)
+                                && Objects.equals(aCategory.isActive(), expectedIsActive)
+                                && Objects.nonNull(aCategory.getId())
+                                && Objects.nonNull(aCategory.getCreatedAt())
+                                && Objects.nonNull(aCategory.getUpdatedAt())
+                                && Objects.nonNull(aCategory.getDeletedAt())
+
+                ));
+    }
+
+    @Test
+    public void givenAValidCommand_whenGatewayThrowsRandomException_thenShouldReturnAnException() {
+        final String expectedName = "Movies";
+        final String expectedDescription = "This is a movies category";
+        final boolean expectedIsActive = true;
+        final String expectedErrorMessage = "Gateway error";
+
+        final CreateCategoryCommand aCommand = CreateCategoryCommand.with(expectedName, expectedDescription, expectedIsActive);
+
+        Mockito.when(gateway.create(Mockito.any())).thenThrow(new IllegalStateException(expectedErrorMessage));
+
+        final IllegalStateException actualException = Assertions.assertThrows(IllegalStateException.class, () -> useCase.execute(aCommand));
+
+        Assertions.assertNotNull(actualException);
+        Assertions.assertEquals(expectedErrorMessage, actualException.getMessage());
+
+        Mockito.verify(gateway, Mockito.times(1))
+                .create(Mockito.argThat(aCategory ->
+                        Objects.equals(aCategory.getName(), expectedName)
                                 && Objects.equals(aCategory.getDescription(), expectedDescription)
                                 && Objects.equals(aCategory.isActive(), expectedIsActive)
                                 && Objects.nonNull(aCategory.getId())
