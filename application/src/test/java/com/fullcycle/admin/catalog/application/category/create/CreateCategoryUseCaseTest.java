@@ -6,6 +6,7 @@ import com.fullcycle.admin.catalog.domain.exceptions.DomainException;
 import com.fullcycle.admin.catalog.domain.validation.handler.Notification;
 import io.vavr.control.Either;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -24,6 +25,11 @@ public class CreateCategoryUseCaseTest {
 
     @Mock
     private CategoryGateway gateway;
+
+    @BeforeEach
+    void cleanUp() {
+        Mockito.reset(gateway);
+    }
 
     @Test
     public void givenAValidCommand_whenCallCreateCategory_thenShouldReturnCategoryId() {
