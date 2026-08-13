@@ -1,9 +1,12 @@
 package com.fullcycle.admin.catalog.infrastructure;
 
-import com.fullcycle.admin.catalog.application.UseCase;
+import com.fullcycle.admin.catalog.infrastructure.configuration.WebServerConfig;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+@SpringBootApplication
 public class Main {
     public static void main(String[] args) {
-        System.out.printf("Hello and welcome!");
+        SpringApplication.run(WebServerConfig.class, args);
     }
 }
