@@ -1,0 +1,45 @@
+package com.fullcycle.admin.catalog.infrastructure.category;
+
+import com.fullcycle.admin.catalog.domain.category.Category;
+import com.fullcycle.admin.catalog.domain.category.CategoryGateway;
+import com.fullcycle.admin.catalog.domain.category.CategoryID;
+import com.fullcycle.admin.catalog.domain.category.CategorySearchQuery;
+import com.fullcycle.admin.catalog.domain.pagination.Pagination;
+import com.fullcycle.admin.catalog.infrastructure.category.persistence.CategoryRepository;
+import org.springframework.stereotype.Service;
+
+import java.util.Optional;
+
+@Service
+public class CategoryMySQLGateway implements CategoryGateway {
+    private final CategoryRepository categoryRepository;
+
+    public CategoryMySQLGateway(final CategoryRepository aCategoryRepository) {
+        this.categoryRepository = aCategoryRepository;
+    }
+
+    @Override
+    public Category create(Category aCategory) {
+        return null;
+    }
+
+    @Override
+    public void deleteById(CategoryID anId) {
+
+    }
+
+    @Override
+    public Optional<Category> findById(CategoryID anId) {
+        return Optional.empty();
+    }
+
+    @Override
+    public Category update(Category aCategory) {
+        return null;
+    }
+
+    @Override
+    public Pagination<Category> findAll(CategorySearchQuery aQuery) {
+        return null;
+    }
+}
