@@ -9,6 +9,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Optional;
+
 @MySQLGatewayTest
 public class CategoryMySQLGatewayTest {
 
@@ -116,5 +118,41 @@ public class CategoryMySQLGatewayTest {
         categoryGateway.deleteById(CategoryID.from("invalid_id"));
 
         Assertions.assertEquals(0, categoryRepository.count());
+    }
+
+    @Test
+    public void givenAPersistedCategoryAndAValidCategoryID_whenCallsFindById_thenShouldReturnACategory() {
+        final String expectedName = "movies";
+        final String expectedDescription = "most watched category";
+        final boolean expectedIsActive = true;
+
+        final Category aCategory = Category.newCategory(expectedName, expectedDescription, expectedIsActive);
+
+        Assertions.assertEquals(0, categoryRepository.count());
+
+        categoryRepository.saveAndFlush(CategoryJpaEntity.from(aCategory));
+
+        Assertions.assertEquals(1, categoryRepository.count());
+
+        final Category actualCategory = categoryGateway.findById(aCategory.getId()).get();
+
+        Assertions.assertEquals(1, categoryRepository.count());
+
+        Assertions.assertEquals(aCategory.getId(), actualCategory.getId());
+        Assertions.assertEquals(expectedName, actualCategory.getName());
+        Assertions.assertEquals(expectedDescription, actualCategory.getDescription());
+        Assertions.assertEquals(expectedIsActive, actualCategory.isActive());
+        Assertions.assertEquals(aCategory.getCreatedAt(), actualCategory.getCreatedAt());
+        Assertions.assertEquals(aCategory.getUpdatedAt(), actualCategory.getUpdatedAt());
+        Assertions.assertNull(actualCategory.getDeletedAt());
+    }
+
+    @Test
+    public void givenAnValidCategoryIDNotStored_whenCallsFindById_thenShouldReturnEmpty() {
+        Assertions.assertEquals(0, categoryRepository.count());
+
+        final Optional<Category> actualCategory = categoryGateway.findById(CategoryID.from("empty"));
+
+        Assertions.assertTrue(actualCategory.isEmpty());
     }
 }
