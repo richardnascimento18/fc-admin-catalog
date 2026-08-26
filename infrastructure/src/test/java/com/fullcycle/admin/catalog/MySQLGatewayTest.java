@@ -1,4 +1,4 @@
-package com.fullcycle.admin.catalog.infrastructure;
+package com.fullcycle.admin.catalog;
 
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,23 +21,8 @@ import java.util.Collection;
 @ComponentScan(includeFilters = {
         @ComponentScan.Filter(type = FilterType.REGEX, pattern = ".*[MySQLGateway]")
 })
-@ExtendWith(MySQLGatewayTest.CleanUpExtensions.class)
+@ExtendWith(CleanUpExtension.class)
 public @interface MySQLGatewayTest {
 
-    class CleanUpExtensions implements BeforeEachCallback {
 
-        @Override
-        public void beforeEach(ExtensionContext context) {
-            final Collection<CrudRepository> repositories = SpringExtension
-                    .getApplicationContext(context)
-                    .getBeansOfType(CrudRepository.class)
-                    .values();
-
-            cleanUp(repositories);
-        }
-
-        private void cleanUp(final Collection<CrudRepository> repositories) {
-            repositories.forEach(CrudRepository::deleteAll);
-        }
-    }
 }

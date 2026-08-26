@@ -24,7 +24,7 @@ public class Category extends AggregateRoot<CategoryID> implements Cloneable {
             final Instant aDeletedDate
     ) {
         super(anId);
-        this.name = Objects.requireNonNull(aName, "'name' should not be null");
+        this.name = aName;
         this.description = aDescription;
         this.active = isActive;
         this.createdAt = Objects.requireNonNull(aCreationDate, "'createdAt' should not be null");

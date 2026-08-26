@@ -12,12 +12,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Component;
 
 import javax.persistence.criteria.*;
 import java.util.Optional;
 
-@Repository
+@Component
 public class CategoryMySQLGateway implements CategoryGateway {
     private final CategoryRepository categoryRepository;
 

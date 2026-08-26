@@ -4,7 +4,7 @@ import com.fullcycle.admin.catalog.domain.category.Category;
 import com.fullcycle.admin.catalog.domain.category.CategoryID;
 import com.fullcycle.admin.catalog.domain.category.CategorySearchQuery;
 import com.fullcycle.admin.catalog.domain.pagination.Pagination;
-import com.fullcycle.admin.catalog.infrastructure.MySQLGatewayTest;
+import com.fullcycle.admin.catalog.MySQLGatewayTest;
 import com.fullcycle.admin.catalog.infrastructure.category.persistence.CategoryJpaEntity;
 import com.fullcycle.admin.catalog.infrastructure.category.persistence.CategoryRepository;
 import org.junit.jupiter.api.Assertions;
