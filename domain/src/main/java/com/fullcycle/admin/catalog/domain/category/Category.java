@@ -1,6 +1,7 @@
 package com.fullcycle.admin.catalog.domain.category;
 
 import com.fullcycle.admin.catalog.domain.AggregateRoot;
+import com.fullcycle.admin.catalog.domain.utils.InstantUtils;
 import com.fullcycle.admin.catalog.domain.validation.ValidationHandler;
 
 import java.time.Instant;
@@ -34,7 +35,7 @@ public class Category extends AggregateRoot<CategoryID> implements Cloneable {
 
     public static Category newCategory(final String aName, final String aDescription, final boolean isActive) {
         final CategoryID id = CategoryID.unique();
-        final Instant now = Instant.now();
+        final Instant now = InstantUtils.now();
         final Instant deletedAt = isActive ? null : now;
 
         return new Category(id, aName, aDescription, isActive, now, now, deletedAt);
@@ -71,7 +72,7 @@ public class Category extends AggregateRoot<CategoryID> implements Cloneable {
         }
 
         this.active = false;
-        this.updatedAt = Instant.now();
+        this.updatedAt = InstantUtils.now();
 
         return this;
     }
@@ -85,7 +86,7 @@ public class Category extends AggregateRoot<CategoryID> implements Cloneable {
 
         this.name = aName;
         this.description = aDescription;
-        this.updatedAt = Instant.now();
+        this.updatedAt = InstantUtils.now();
 
         return this;
     }
